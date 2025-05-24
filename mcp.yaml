@@ -1,0 +1,316 @@
+version: "1.0"
+name: "Catastro Geográfico Inteligente"
+description: "MCP para consulta de información catastral a partir de direcciones en lenguaje natural"
+author: "Fabián Jiménez <fabian.jimenez.ing@gmail.com>"
+contact: "+573014165044"
+license: "MIT"
+
+intents:
+  - name: consultar_catastro
+    description: "Consultar información catastral de un predio"
+    examples:
+      - "Quiero saber datos de una casa"
+      - "Necesito información catastral"
+      - "Dame datos de un predio"
+      - "Busca información de un inmueble"
+      - "Consulta catastral"
+  
+  - name: proporcionar_direccion
+    description: "Proporcionar una dirección para consulta"
+    examples:
+      - "Calle 147 #11-10"
+      - "Carrera 15 #95-34 Apto 502"
+      - "Avenida Caracas #63-45"
+      - "Diagonal 22 sur #14-31"
+  
+  - name: proporcionar_ciudad
+    description: "Proporcionar la ciudad de la dirección"
+    examples:
+      - "Bogotá"
+      - "Medellín"
+      - "Cali"
+      - "Barranquilla"
+  
+  - name: proporcionar_pais
+    description: "Proporcionar el país de la dirección"
+    examples:
+      - "Colombia"
+      - "México"
+      - "Argentina"
+      - "Chile"
+  
+  - name: confirmar
+    description: "Confirmar una acción o información"
+    examples:
+      - "Sí"
+      - "Correcto"
+      - "Exacto"
+      - "Está bien"
+  
+  - name: negar
+    description: "Negar una acción o información"
+    examples:
+      - "No"
+      - "Incorrecto"
+      - "Está mal"
+      - "No es así"
+  
+  - name: corregir_direccion
+    description: "Corregir la dirección proporcionada"
+    examples:
+      - "La dirección es incorrecta"
+      - "Está mal escrita"
+      - "No es esa dirección"
+      - "Quiero cambiar la dirección"
+
+entities:
+  - name: direccion
+    description: "Dirección del predio"
+  
+  - name: ciudad
+    description: "Ciudad donde se encuentra el predio"
+  
+  - name: pais
+    description: "País donde se encuentra el predio"
+  
+  - name: numero_predial
+    description: "Número predial o matrícula inmobiliaria"
+  
+  - name: chip
+    description: "Código CHIP del predio"
+
+slots:
+  - name: direccion
+    entity: direccion
+    required: true
+    prompt: "¿Cuál es la dirección exacta del predio?"
+    reprompt: "Por favor, proporciona la dirección completa del predio (calle, número, etc.)."
+  
+  - name: ciudad
+    entity: ciudad
+    required: true
+    prompt: "¿En qué ciudad está ubicada esa dirección?"
+    reprompt: "Necesito saber la ciudad donde se encuentra el predio."
+  
+  - name: pais
+    entity: pais
+    required: true
+    default: "Colombia"
+    prompt: "¿En qué país está ubicada esa dirección?"
+    reprompt: "Por favor, indica el país donde se encuentra el predio."
+  
+  - name: direccion_completa
+    type: composed
+    required: false
+    composition: "{direccion}, {ciudad}, {pais}"
+  
+  - name: direccion_confirmada
+    type: boolean
+    required: true
+    default: false
+  
+  - name: coordenadas
+    type: object
+    required: false
+  
+  - name: predio_info
+    type: object
+    required: false
+  
+  - name: pois_cercanos
+    type: array
+    required: false
+
+flows:
+  - name: flujo_principal
+    description: "Flujo principal para consulta catastral"
+    initial_state: inicio
+    states:
+      - name: inicio
+        type: message
+        message: "Bienvenido al servicio de consulta catastral. Puedo ayudarte a obtener información detallada sobre un predio a partir de su dirección."
+        next_state: solicitar_direccion
+      
+      - name: solicitar_direccion
+        type: slot_filling
+        slot: direccion
+        next_state: solicitar_ciudad
+      
+      - name: solicitar_ciudad
+        type: slot_filling
+        slot: ciudad
+        next_state: verificar_pais
+      
+      - name: verificar_pais
+        type: conditional
+        conditions:
+          - condition: "slots.pais == null"
+            next_state: solicitar_pais
+          - condition: "slots.pais != null"
+            next_state: confirmar_direccion
+      
+      - name: solicitar_pais
+        type: slot_filling
+        slot: pais
+        next_state: confirmar_direccion
+      
+      - name: confirmar_direccion
+        type: message
+        message: "Voy a buscar información para la dirección: {direccion_completa}. ¿Es correcta esta dirección?"
+        next_state: esperar_confirmacion_direccion
+      
+      - name: esperar_confirmacion_direccion
+        type: intent_transition
+        transitions:
+          - intent: confirmar
+            next_state: geocodificar_direccion
+          - intent: negar
+            next_state: corregir_direccion
+          - intent: corregir_direccion
+            next_state: corregir_direccion
+      
+      - name: corregir_direccion
+        type: message
+        message: "Entendido, vamos a corregir la dirección."
+        next_state: solicitar_direccion
+      
+      - name: geocodificar_direccion
+        type: action
+        action: geocodificar_direccion
+        next_state: buscar_predio
+      
+      - name: buscar_predio
+        type: action
+        action: buscar_predio
+        transitions:
+          - condition: "action_result.success == true"
+            next_state: buscar_pois
+          - condition: "action_result.success == false"
+            next_state: error_busqueda
+      
+      - name: buscar_pois
+        type: action
+        action: buscar_pois_cercanos
+        next_state: mostrar_resultados
+      
+      - name: mostrar_resultados
+        type: message
+        message: |
+          Dirección confirmada: {direccion_completa}
+          Coordenadas: {coordenadas.lat}, {coordenadas.lng}
+          
+          Información catastral:
+          - Número predial: {predio_info.numero_predial}
+          - Área terreno: {predio_info.area_terreno} m²
+          - Área construida: {predio_info.area_construida} m²
+          - Estrato: {predio_info.estrato}
+          - Uso: {predio_info.uso_descripcion}
+          
+          Cerca tienes:
+          {pois_cercanos_texto}
+        next_state: preguntar_nueva_consulta
+      
+      - name: error_busqueda
+        type: message
+        message: "Lo siento, no pude encontrar información catastral para la dirección proporcionada. Esto puede deberse a que la dirección no existe en nuestra base de datos o está mal escrita."
+        next_state: preguntar_nueva_consulta
+      
+      - name: preguntar_nueva_consulta
+        type: message
+        message: "¿Deseas realizar otra consulta catastral?"
+        next_state: esperar_respuesta_nueva_consulta
+      
+      - name: esperar_respuesta_nueva_consulta
+        type: intent_transition
+        transitions:
+          - intent: confirmar
+            next_state: reiniciar_consulta
+          - intent: negar
+            next_state: despedida
+      
+      - name: reiniciar_consulta
+        type: action
+        action: reiniciar_slots
+        next_state: solicitar_direccion
+      
+      - name: despedida
+        type: message
+        message: "Gracias por utilizar nuestro servicio de consulta catastral. ¡Hasta pronto!"
+        next_state: fin
+      
+      - name: fin
+        type: end
+
+actions:
+  - name: geocodificar_direccion
+    description: "Geocodifica la dirección para obtener coordenadas"
+    implementation:
+      type: "python"
+      module: "api.controllers.catastro_controller"
+      function: "geocodificar_direccion"
+    input_slots:
+      - direccion
+      - ciudad
+      - pais
+    output_slots:
+      - coordenadas
+      - direccion_confirmada
+  
+  - name: buscar_predio
+    description: "Busca información del predio por coordenadas"
+    implementation:
+      type: "python"
+      module: "api.controllers.catastro_controller"
+      function: "buscar_predio_por_coordenadas"
+    input_slots:
+      - coordenadas
+    output_slots:
+      - predio_info
+  
+  - name: buscar_pois_cercanos
+    description: "Busca puntos de interés cercanos al predio"
+    implementation:
+      type: "python"
+      module: "api.controllers.catastro_controller"
+      function: "buscar_pois_cercanos"
+    input_slots:
+      - coordenadas
+    output_slots:
+      - pois_cercanos
+      - pois_cercanos_texto
+  
+  - name: reiniciar_slots
+    description: "Reinicia los slots para una nueva consulta"
+    implementation:
+      type: "python"
+      module: "api.controllers.catastro_controller"
+      function: "reiniciar_slots"
+    output_slots:
+      - direccion
+      - ciudad
+      - pais
+      - direccion_completa
+      - direccion_confirmada
+      - coordenadas
+      - predio_info
+      - pois_cercanos
+      - pois_cercanos_texto
+
+fallbacks:
+  - condition: "global"
+    message: "Lo siento, no entendí lo que quieres hacer. Puedo ayudarte a consultar información catastral de un predio a partir de su dirección."
+    next_state: "current"
+  
+  - condition: "max_retries_exceeded"
+    message: "Parece que estamos teniendo dificultades para entendernos. Por favor, intenta expresar tu consulta de otra manera o proporciona la información solicitada."
+    next_state: "current"
+  
+  - condition: "timeout"
+    message: "¿Sigues ahí? Si deseas continuar con la consulta catastral, por favor responde a la pregunta anterior."
+    next_state: "current"
+
+settings:
+  language: "es"
+  max_retries: 3
+  timeout: 300
+  confidence_threshold: 0.6

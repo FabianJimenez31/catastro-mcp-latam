@@ -1,0 +1,8 @@
+requirements.txt
+flask==2.3.3
+flask-cors==4.0.0
+pandas==2.1.1
+requests==2.31.0
+geopy==2.4.0
+jupyter==1.0.0
+matplotlib==3.8.0

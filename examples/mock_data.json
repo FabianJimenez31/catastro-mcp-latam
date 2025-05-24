@@ -1,0 +1,226 @@
+{
+  "demo_direcciones": [
+    {
+      "direccion": "Calle 147 #11-10",
+      "ciudad": "Bogotá",
+      "pais": "Colombia",
+      "descripcion": "Dirección residencial en zona norte de Bogotá"
+    },
+    {
+      "direccion": "Carrera 7 #72-41",
+      "ciudad": "Bogotá",
+      "pais": "Colombia",
+      "descripcion": "Dirección comercial en zona financiera"
+    },
+    {
+      "direccion": "Avenida Caracas #45-03",
+      "ciudad": "Bogotá",
+      "pais": "Colombia",
+      "descripcion": "Dirección en corredor principal"
+    },
+    {
+      "direccion": "Calle 80 #14-38",
+      "ciudad": "Bogotá",
+      "pais": "Colombia",
+      "descripcion": "Dirección en zona mixta residencial/comercial"
+    }
+  ],
+  "mock_resultados": [
+    {
+      "direccion": {
+        "original": "Calle 147 #11-10, Bogotá, Colombia",
+        "formateada": "Calle 147 #11-10, Cedritos, Bogotá, Colombia"
+      },
+      "coordenadas": {
+        "lat": 4.7281,
+        "lng": -74.0332
+      },
+      "predio": {
+        "chip": "AAA0125XDMS",
+        "numero_predial": "110010145072100090011000000000",
+        "direccion": "CL 147 11 10",
+        "barrio": "CEDRITOS",
+        "area_terreno": 120.5,
+        "area_construida": 93.2,
+        "uso_codigo": "001",
+        "uso_descripcion": "Residencial",
+        "estrato": 4,
+        "anio_construccion": "1995",
+        "valor_catastral": 450000000.0
+      },
+      "pois_cercanos": [
+        {
+          "tipo": "Colegio",
+          "nombre": "Colegio Cedritos",
+          "distancia": 320.5,
+          "direccion": "Calle 145 #12-45"
+        },
+        {
+          "tipo": "Transporte",
+          "nombre": "Estación Transmilenio Cedritos",
+          "distancia": 450.8,
+          "direccion": "Autopista Norte #147-30"
+        },
+        {
+          "tipo": "Parque",
+          "nombre": "Parque Vecinal Cedritos",
+          "distancia": 200.3,
+          "direccion": "Calle 148 #11-20"
+        },
+        {
+          "tipo": "Comercio",
+          "nombre": "Centro Comercial Cedritos",
+          "distancia": 550.2,
+          "direccion": "Calle 150 #13-30"
+        }
+      ]
+    },
+    {
+      "direccion": {
+        "original": "Carrera 7 #72-41, Bogotá, Colombia",
+        "formateada": "Carrera 7 #72-41, Rosales, Bogotá, Colombia"
+      },
+      "coordenadas": {
+        "lat": 4.6563,
+        "lng": -74.0534
+      },
+      "predio": {
+        "chip": "AAA0087LKJH",
+        "numero_predial": "110010145072100090022000000000",
+        "direccion": "KR 7 72 41",
+        "barrio": "ROSALES",
+        "area_terreno": 450.0,
+        "area_construida": 1200.0,
+        "uso_codigo": "002",
+        "uso_descripcion": "Comercial",
+        "estrato": 6,
+        "anio_construccion": "2005",
+        "valor_catastral": 3500000000.0
+      },
+      "pois_cercanos": [
+        {
+          "tipo": "Banco",
+          "nombre": "Banco Principal",
+          "distancia": 120.5,
+          "direccion": "Carrera 7 #72-10"
+        },
+        {
+          "tipo": "Restaurante",
+          "nombre": "Restaurante Gourmet",
+          "distancia": 80.8,
+          "direccion": "Carrera 8 #72-15"
+        },
+        {
+          "tipo": "Hotel",
+          "nombre": "Hotel Ejecutivo",
+          "distancia": 200.3,
+          "direccion": "Carrera 7 #73-50"
+        },
+        {
+          "tipo": "Transporte",
+          "nombre": "Estación Transmilenio Flores",
+          "distancia": 350.2,
+          "direccion": "Carrera 7 #76-30"
+        }
+      ]
+    },
+    {
+      "direccion": {
+        "original": "Avenida Caracas #45-03, Bogotá, Colombia",
+        "formateada": "Avenida Caracas #45-03, Chapinero, Bogotá, Colombia"
+      },
+      "coordenadas": {
+        "lat": 4.6342,
+        "lng": -74.0652
+      },
+      "predio": {
+        "chip": "AAA0098POIU",
+        "numero_predial": "110010145072100090033000000000",
+        "direccion": "AV CARACAS 45 03",
+        "barrio": "CHAPINERO",
+        "area_terreno": 350.0,
+        "area_construida": 850.0,
+        "uso_codigo": "010",
+        "uso_descripcion": "Comercial en Corredor Comercial",
+        "estrato": 3,
+        "anio_construccion": "1985",
+        "valor_catastral": 1800000000.0
+      },
+      "pois_cercanos": [
+        {
+          "tipo": "Universidad",
+          "nombre": "Universidad Central",
+          "distancia": 220.5,
+          "direccion": "Calle 45 #5-20"
+        },
+        {
+          "tipo": "Transporte",
+          "nombre": "Estación Transmilenio Marly",
+          "distancia": 150.8,
+          "direccion": "Avenida Caracas #45-00"
+        },
+        {
+          "tipo": "Hospital",
+          "nombre": "Clínica Marly",
+          "distancia": 300.3,
+          "direccion": "Calle 50 #9-67"
+        },
+        {
+          "tipo": "Comercio",
+          "nombre": "Centro Comercial Caracas",
+          "distancia": 180.2,
+          "direccion": "Avenida Caracas #46-30"
+        }
+      ]
+    },
+    {
+      "direccion": {
+        "original": "Calle 80 #14-38, Bogotá, Colombia",
+        "formateada": "Calle 80 #14-38, El Lago, Bogotá, Colombia"
+      },
+      "coordenadas": {
+        "lat": 4.6712,
+        "lng": -74.0587
+      },
+      "predio": {
+        "chip": "AAA0076MNBV",
+        "numero_predial": "110010145072100090044000000000",
+        "direccion": "CL 80 14 38",
+        "barrio": "EL LAGO",
+        "area_terreno": 280.0,
+        "area_construida": 420.0,
+        "uso_codigo": "017",
+        "uso_descripcion": "Unidad Residencial",
+        "estrato": 4,
+        "anio_construccion": "1998",
+        "valor_catastral": 950000000.0
+      },
+      "pois_cercanos": [
+        {
+          "tipo": "Parque",
+          "nombre": "Parque El Lago",
+          "distancia": 180.5,
+          "direccion": "Calle 80 #15-30"
+        },
+        {
+          "tipo": "Transporte",
+          "nombre": "Estación Transmilenio Héroes",
+          "distancia": 350.8,
+          "direccion": "Autopista Norte #80-00"
+        },
+        {
+          "tipo": "Comercio",
+          "nombre": "Centro Comercial Unilago",
+          "distancia": 250.3,
+          "direccion": "Carrera 15 #78-33"
+        },
+        {
+          "tipo": "Restaurante",
+          "nombre": "Zona Gastronómica",
+          "distancia": 150.2,
+          "direccion": "Calle 81 #13-05"
+        }
+      ]
+    }
+  ]
+}
